@@ -109,9 +109,6 @@ ALL_SERVICES="$ALL_SERVICES sys-mgmt-agent"
 # kuiper
 ALL_SERVICES="$ALL_SERVICES kuiper"
 
-# services that use the database
-DB_SERVICES=(core-command core-data core-metadata support-notifications support-scheduler)
-
 # handle_svc will either turn a service off or on and set the associated
 # config item
 # first arg is the service, second is the state to put it in
@@ -132,28 +129,6 @@ handle_svc () {
         echo "invalid setting $2 for service $1"
         exit 1;;
     esac
-}
-
-restart_db_services () {
-    # since the configuration files have been modified, those
-    # changes need to be progpogated into relevant services, so
-    # restart the services with updated configuration if they were
-    # already running
-    for svc in ${DB_SERVICES[*]}; do
-        status=`snapctl services "$SNAP_NAME.$svc" | grep -o "^active"`
-
-        if [ "$status" = "active" ]; then
-            snapctl restart "$SNAP_NAME.$svc"
-        fi
-    done
-}
-
-update_consul_db_type () {
-    curl -s --request PUT --data "$2" \
-        http://localhost:8500/v1/kv/edgex/core/1.0/edgex-"$1"/Databases/Primary/Type
-
-    curl -s --request PUT --data "$3" \
-        http://localhost:8500/v1/kv/edgex/core/1.0/edgex-"$1"/Databases/Primary/Port
 }
 
 handle_config () {
@@ -303,15 +278,3 @@ for key in $ALL_SERVICES; do
     esac
 done
 
-# handle usage of database provider
-#
-# FIXME (HANOI)
-#
-# The code to switch dbtype has been removed, however
-# I'm leaving the snapctl get to retrive the dbtype, as
-# this may be leveraged in the configure hook of Hanio
-# to block refresh from Geneva to Hanoi if the dbtype
-# is set to 'mongodb' and the project has not yet provided
-# a database migration script...
-dbProvider=$(snapctl get dbtype)
-PREV_DB_PROVIDER_FILE="$SNAP_DATA/prevdbtype"
