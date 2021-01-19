@@ -68,6 +68,17 @@ conf_to_env["smtp.password"]="SMTP_PASSWORD"
 conf_to_env["smtp.port"]="SMTP_PORT"
 conf_to_env["smtp.sender"]="SMTP_SENDER"
 conf_to_env["smtp.enable-self-signed-cert"]="SMTP_ENABLE_SELF_SIGNED_CERT"
+#
+# security-proxy
+#
+# ADD_PROXY_ROUTE is a csv list of URLs to be added to the
+# API Gateway (aka Kong). For references:
+#
+# https://docs.edgexfoundry.org/1.3/microservices/security/Ch-APIGateway/
+#
+# TODO: validation
+#
+conf_to_env["add-proxy-route"]="ADD_PROXY_ROUTE"
 
 # The syntax to set a configuration key is:
 #
@@ -145,10 +156,22 @@ handle_config () {
 
     logger "edgex:configure: $map_init"
 
+    local service=$1
     local mapAsString
     mapAsString="$map_init"
     local -A "$mapAsString"
-    file="$SNAP_DATA/config/$1/res/$1.env"
+
+    # Handle security-* service naming. The service names in this
+    # hook historically do not align with the actual binary commands.
+    # As such, when handling configuration settings for them, we need
+    # to translate the hook name to the actual binary name.
+    #
+    # TODO: handle security-secret-store
+    if [ "$service" == "security-proxy" ]; then
+	service="security-proxy-setup"
+    fi
+
+    file="$SNAP_DATA/config/$service/res/$service.env"
 
     # if no $service.env file exists, create it
     # TODO: get rid of fore loop, and just access
