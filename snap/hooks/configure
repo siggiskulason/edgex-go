@@ -79,6 +79,16 @@ conf_to_env["smtp.enable-self-signed-cert"]="SMTP_ENABLE_SELF_SIGNED_CERT"
 # TODO: validation
 #
 conf_to_env["add-proxy-route"]="ADD_PROXY_ROUTE"
+#
+# security-secret-store
+#
+# ADD_SECRETSTORE_TOKENS is a csv list of service keys to be added to the
+# list of Vault tokens that security-file-token-provider (launched by
+# security-secretstore-setup) creates.
+#
+# TODO: validation
+#
+conf_to_env["add-secretstore-tokens"]="ADD_SECRETSTORE_TOKENS"
 
 # The syntax to set a configuration key is:
 #
@@ -166,9 +176,10 @@ handle_config () {
     # As such, when handling configuration settings for them, we need
     # to translate the hook name to the actual binary name.
     #
-    # TODO: handle security-secret-store
     if [ "$service" == "security-proxy" ]; then
 	service="security-proxy-setup"
+    elif [ "$service" == "security-secret-store" ]; then
+	service="security-secretstore-setup"
     fi
 
     file="$SNAP_DATA/config/$service/res/$service.env"

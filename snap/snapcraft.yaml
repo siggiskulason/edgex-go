@@ -179,6 +179,8 @@ apps:
     after: [vault]
     command: >-
       bin/security-secretstore-setup -confdir $SNAP_DATA/config/security-secretstore-setup/res $VAULT_INTERVAL
+    command-chain:
+      - bin/service-config-overrides.sh
     daemon: oneshot
     environment:
       VAULT_INTERVAL: "--vaultInterval=10"
