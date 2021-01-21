@@ -24,6 +24,11 @@ conf_to_env["registry.host"]="REGISTRY_HOST"
 conf_to_env["registry.port"]="REGISTRY_PORT"
 conf_to_env["registry.type"]="REGISTRY_TYPE"
 
+# [Clients.Coredata]
+conf_to_env["clients.coredata.host"]="CLIENTS_COREDATA_HOST"
+conf_to_env["clients.coredata.port"]="CLIENTS_COREDATA_PORT"
+conf_to_env["clients.coredata.protocol"]="CLIENTS_COREDATA_PROTOCOL"
+
 # [Clients.Metadata]
 conf_to_env["clients.metadata.host"]="CLIENTS_METADATA_HOST"
 conf_to_env["clients.metadata.port"]="CLIENTS_METADATA_PORT"
@@ -33,6 +38,7 @@ conf_to_env["clients.metadata.protocol"]="CLIENTS_METADATA_PROTOCOL"
 conf_to_env["clients.notifications.host"]="CLIENTS_METADATA_HOST"
 conf_to_env["clients.notifications.port"]="CLIENTS_METADATA_PORT"
 conf_to_env["clients.notifications.protocol"]="CLIENTS_METADATA_PROTOCOL"
+
 # [Databases]
 conf_to_env["databases.primary.host"]="DATABASES_PRIMARY_HOST"
 conf_to_env["databases.primary.name"]="DATABASES_PRIMARY_NAME"
