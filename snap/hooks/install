@@ -142,6 +142,24 @@ if [ ! -f "$SNAP_DATA/config/security-proxy-setup/kong.conf" ]; then
     sed -i "s@#nginx_user = nobody nobody@nginx_user = root root@" "$SNAP_DATA/config/security-proxy-setup/kong.conf"
 fi
 
+# handle proxy and secret-store configuration
+#
+# TODO: this code needs to be merged with the configure
+# code once these hooks have been re-implemented in go.
+#
+# See configure hook for more details.
+#
+routes=$(snapctl get "env.security-proxy.add-proxy-route")
+tokens=$(snapctl get "env.security-secret-store.add-secretstore-tokens")
+
+if [ ! -z "$routes" ]; then
+    echo "export ADD_PROXY_ROUTE=$routes" > "$SNAP_DATA/config/security-proxy-setup/res/security-proxy-setup.env"
+fi
+
+if [ ! -z "$tokens" ]; then
+    echo "export ADD_SECRETSTORE_TOKENS=$tokens" > "$SNAP_DATA/config/security-secretstore-setup/res/security-secretstore-setup.env"
+fi
+
 # setup postgres db config file with env vars replaced
 if [ ! -f "$SNAP_DATA/etc/postgresql/10/main/postgresql.conf" ]; then
     mkdir -p "$SNAP_DATA/etc/postgresql/10/main"
