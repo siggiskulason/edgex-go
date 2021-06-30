@@ -821,7 +821,7 @@ parts:
     source: https://github.com/edgexfoundry/device-virtual-go.git
     source-depth: 1
     # TODO: ideally this should be changed to v2.0.0
-    source-tag: v2.0.0
+    source-tag: master # v2.0.0
     plugin: make
     after: [go-build-helper]
     override-build: |
@@ -850,7 +850,7 @@ parts:
   app-service-config:
     plugin: nil
     stage-snaps:
-      - edgex-app-service-configurable/2.0/stable
+      - edgex-app-service-configurable/latest/edge
     stage:
       - -res/functional-tests/configuration.toml
       - -res/http-export/configuration.toml
